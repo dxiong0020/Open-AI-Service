@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GraphController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -60,11 +61,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('chat-bot')->group(function () {
         Route::get('/{id?}', [OpenAIController::class, 'chat'])->name('chatbot.index');
-        Route::post('/api/chatSend', [OpenAIController::class, 'chatSend'])->name('chatbot.chatSend');
-        Route::post('/createChat', [OpenAIController::class, 'createChat'])->name('chat.create');
-        Route::post('/api/removeChat', [OpenAIController::class, 'removeChat'])->name('chat.remove');
     });
 
     // Graph 
-    // Route::get('/bot-graph', [BotGraphController::class, 'index'])->name('bot-graph.index');    
+    Route::get('/graph', [GraphController::class, 'index'])->name('graph.index');    
 });

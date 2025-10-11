@@ -41,7 +41,7 @@ class OpenAIController extends Controller
 
         return Inertia::render('Chat', [
             'msgs' => $messages,
-            'chatId' => isset($id) ?? '',
+            'chatId' => $id ?? '',
             'chats' => $chatHistory,
         ]);
     }
@@ -56,19 +56,17 @@ class OpenAIController extends Controller
             }
             // save the user message
             $userMsg = $this->createMessage($chatId, 'user', $request->message);
-            
             $response = Prism::text()
                 ->using(Provider::Gemini, 'gemini-2.5-flash')
                 ->withPrompt($request->message)
                 ->asText();    
             // save bot message
             $botMsg = $this->createMessage($chatId, 'bot', $response->text);
-            $response = ['chatId' => $chatId, 'user' => ['message_id' => $userMsg->id, 'message' => $userMsg->message], 'bot' => ['message_id' => $botMsg->id, 'message' => $botMsg->message]];
+            $response = ['result' => 'success', 'chatId' => $chatId, 'user' => ['message_id' => $userMsg->id, 'message' => $userMsg->message], 'bot' => ['message_id' => $botMsg->id, 'message' => $botMsg->message]];
         } catch (Exception $ex) {
             Log::error($ex);
             $response = ['result' => 'failed', 'error_message' => 'sorry, we were not able to get a response'];
         }
-
         return response()->json($response, 200);
     }
 
@@ -89,24 +87,12 @@ class OpenAIController extends Controller
         ]);
     }
 
-    public function createChat() 
-    {
-        try {
-            $user = User::find(Auth::id());
-            $chat = $user->createChat();
-            return redirect()->route('chatbot.index', ['chatId' => $chat->id])->with('success', 'new chat created');
-        } catch (Exception $ex) {
-            Log::error($ex);
-            return redirect()->back()->with('error', 'failed to create chat');
-        }
-    }
-
     public function removeChat(Request $request)
     {
         try {
             $chat = Chat::find($request->chatId);
             $deleted = $chat->delete();
-            $chatHistory = $request->chatHistory;
+            $chatHistory = $request->chatHistory ?? [];
             if ($deleted) {
                 $chatHistory = array_filter($chatHistory, function ($chat) use ($request) {
                     return $chat['id'] !== $request->chatId;

@@ -1,3 +1,4 @@
+import { fetchData } from "@/Helpers/fetch";
 import React, { useState, useRef, useEffect } from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -16,38 +17,28 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
     async function sendHandler() {
         try {
             setLoading(true);
-            const response = await fetch("/chat-bot/api/chatSend", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
-                },
-                body: JSON.stringify({ message: chatInput, chatId: sessionId }),
+            const data = await fetchData("/api/chatSend", "POST", {
+                message: chatInput,
+                chatId: sessionId,
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             // set new message
-            const data = await response.json();
-            setMessages((prev) => [
-                ...prev,
-                {
-                    id: data.user.message_id,
-                    role: "user",
-                    message: data.user.message,
-                },
-                {
-                    id: data.bot.message_id,
-                    role: "bot",
-                    message: data.bot.message,
-                },
-            ]);
-            if (!sessionId) {
-                setSessionId(data.id);
+            if (data.result === "success") {
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        id: data.user.message_id,
+                        role: "user",
+                        message: data.user.message,
+                    },
+                    {
+                        id: data.bot.message_id,
+                        role: "bot",
+                        message: data.bot.message,
+                    },
+                ]);
+                if (!sessionId) {
+                    setSessionId(data.id);
+                }
             }
             setLoading(false);
             setChatInput(""); // clear input after sending

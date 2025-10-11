@@ -55,4 +55,15 @@ class User extends Authenticatable
     {
         return Chat::create(['user_id' => $this->id]);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            if ($user->isForceDeleting()) {
+                $user->chats()->forceDelete();
+            } else {
+                $user->chats()->delete();
+            }
+        });
+    }
 }

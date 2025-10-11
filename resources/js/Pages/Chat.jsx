@@ -2,38 +2,22 @@ import ChatBot from "@/Components/ChatBot";
 import SessionHistory from "@/Components/SessionHistory";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { fetchData } from "@/Helpers/fetch";
 
 export default function Chat({ msgs, chatId, chats }) {
     const [sessionId, setSessionId] = useState(chatId);
     const [sessions, setSessions] = useState(chats);
 
-    function handleNewSession() {
-        setSessionId(null);
-        msgs = [];
-    }
-
     async function handleRemoveSession(id) {
-        try {
-        const response = await fetch("/chat-bot/api/removeChat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content"),
-            },
-            body: JSON.stringify({ chatId: id, chatHistory: sessions }),
+        const data = await fetchData("/api/removeChat", "POST", {
+            chatId: id,
+            chatHistory: sessions,
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (Array.isArray(data.chatHistory)) {
+            setSessions(data.chatHistory);
         }
-        const data = await response.json();
-        setSessions(data.chatHistory); 
-    } catch (error) {
-        console.log('error: ', error);
-    }
     }
 
     return (
@@ -53,7 +37,6 @@ export default function Chat({ msgs, chatId, chats }) {
                                 <SessionHistory
                                     sessions={sessions}
                                     sessionId={sessionId}
-                                    onNew={handleNewSession}
                                     onRemove={handleRemoveSession}
                                 />
                                 <ChatBot

@@ -30,4 +30,15 @@ class Chat extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($chat) {
+            if ($chat->isForceDeleting()) {
+                $chat->messages()->forceDelete();
+            } else {
+                $chat->messages()->delete();
+            }
+        });
+    }
 }

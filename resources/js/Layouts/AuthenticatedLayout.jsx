@@ -35,6 +35,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Chat Bot
                                 </NavLink>
+                                <NavLink
+                                    href={route("graph.index")}
+                                    active={route().current("graph.index")}
+                                >
+                                    Graphs
+                                </NavLink>
                             </div>
                         </div>
 
