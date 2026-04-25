@@ -2,6 +2,7 @@ export async function fetchData(url, method = "POST", data = {}) {
     try {
         const options = {
             method: method,
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": document

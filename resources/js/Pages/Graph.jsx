@@ -15,17 +15,25 @@ export default function Graph({ years }) {
     const [year, setYear] = useState(years[0] ?? 2025);
     useEffect(() => {
         async function loadGraphData() {
+            console.log(currentGraph);
             if (currentGraph === "open_ai_usage") {
                 const data = await fetchData("/api/openAiUsage", "POST", {
                     year: year,
                 });
-                setGraphData(data.graphData);
+                let graphData = data?.graphData;
+                if (!graphData) {
+                    graphData = [];
+                } 
+                setGraphData(graphData);
             } else if (currentGraph === "monthly_cost") {
                 const data = await fetchData("/api/monthlyCostUsage", "POST", {
                     year: year,
                 });
-                setGraphData(data.graphData);
-
+                let graphData = data?.graphData;
+                if (!graphData) {
+                    graphData = [];
+                } 
+                setGraphData(graphData);
             }
         }
 
