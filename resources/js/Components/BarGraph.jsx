@@ -1,6 +1,18 @@
 import { Bar } from "react-chartjs-2";
+import { useEffect, useState } from "react";
 
 export default function BarGraph({ data = [], title = ''}) {
+    const [isDark, setIsDark] = useState(false);
+
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setIsDark(document.documentElement.classList.contains('dark'));
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        setIsDark(document.documentElement.classList.contains('dark'));
+        return () => observer.disconnect();
+    }, []);
+
     function formatData(data) {
         const Data = Array.isArray(data) ? data : [];
         return {
@@ -10,7 +22,7 @@ export default function BarGraph({ data = [], title = ''}) {
                     label: "# of enquiries",
                     data: Data.map((record) => record.enquiries),
                     backgroundColor: getBarColors(),
-                    borderColor: "black",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.5)" : "black",
                     borderWidth: 1,
                 }
             ],
@@ -38,10 +50,21 @@ export default function BarGraph({ data = [], title = ''}) {
         <Bar
             data={formatData(data)}
             options={{
+                scales: {
+                    x: {
+                        ticks: { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)' },
+                        grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }
+                    },
+                    y: {
+                        ticks: { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)' },
+                        grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
                         text: title,
+                        color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
                     },
                     legend: {
                         display: false,

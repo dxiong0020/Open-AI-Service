@@ -9,8 +9,8 @@ export default function SessionHistory({ sessions = [], sessionId = null, onRemo
                             key={session.id}
                             className={`flex items-center justify-between px-2 py-1 rounded cursor-pointer ${
                                 sessionId === session.id
-                                    ? "bg-blue-100"
-                                    : "hover:bg-gray-200"
+                                    ? "bg-blue-100 dark:bg-blue-900/30"
+                                    : "hover:bg-gray-200 dark:hover:bg-gray-700"
                             }`}
                         >
                             <span
@@ -32,9 +32,9 @@ export default function SessionHistory({ sessions = [], sessionId = null, onRemo
     }
 
     return (
-        <div className="w-64 border-r bg-gray-100 flex flex-col">
+        <div className="w-64 border bg-gray-100 flex flex-col rounded-lg mr-4 dark:bg-gray-800 dark:border-gray-700">
             {/* Header */}
-            <div className="p-4 font-semibold text-gray-700 border-b flex items-center justify-center">
+            <div className="p-4 font-semibold text-gray-700 border-b flex items-center justify-center dark:text-gray-300 dark:border-gray-700">
                 Chat History
             </div>
 
@@ -46,10 +46,10 @@ export default function SessionHistory({ sessions = [], sessionId = null, onRemo
             </div>
 
             {/* New Chat */}
-            <div className="p-4 border-t">
+            <div className="p-4 border-t dark:border-gray-700">
                 <button
                     onClick={() => router.visit('/chat-bot')}
-                    className="w-full bg-blue-500 text-white rounded-lg py-2 hover:bg-blue-600"
+                    className="w-full bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500"
                 >
                     + New Chat
                 </button>

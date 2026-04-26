@@ -15,9 +15,7 @@ class Chat extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'user_id'
-    ];
+    protected $guarded = [];
 
     public $table = 'chats';
 
@@ -26,7 +24,7 @@ class Chat extends Model
         return $this->hasMany(Message::class);
     }
 
-    public function user() 
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

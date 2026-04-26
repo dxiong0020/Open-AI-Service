@@ -11,7 +11,9 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
 
     // Scroll to bottom whenever messages change
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (messages.length > 0) {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
     }, [messages]);
 
     async function sendHandler() {
@@ -59,8 +61,8 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
                         key={msg.id}
                         className={`max-w-xl px-4 py-2 mb-2 rounded-lg text-sm whitespace-pre-wrap ${
                             msg.role === "user"
-                                ? "bg-blue-500 text-white self-end ml-auto"
-                                : "bg-gray-200 text-gray-800 self-start mr-auto"
+                                ? "bg-blue-600 text-white self-end ml-auto"
+                                : "bg-gray-200 text-gray-800 self-start mr-auto dark:bg-gray-700 dark:text-gray-100"
                         }`}
                     >
                         <SyntaxHighlighter
@@ -83,8 +85,8 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
                     key={msg.id}
                     className={`max-w-xs px-4 py-2 mb-2 rounded-lg text-sm ${
                         msg.role === "user"
-                            ? "bg-blue-500 text-white self-end ml-auto"
-                            : "bg-gray-200 text-gray-800 self-start mr-auto"
+                            ? "bg-blue-600 text-white self-end ml-auto"
+                            : "bg-gray-200 text-gray-800 self-start mr-auto dark:bg-gray-700 dark:text-gray-100"
                     }`}
                 >
                     {msg.message}
@@ -96,11 +98,11 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
     return (
         <div className="flex-1 flex flex-col">
             {/* Chat messages area */}
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:border-gray-700">
                 {displayMessages()}
                 {/* Bot typing indicator */}
                 {loading && (
-                    <div className="bg-gray-300 text-gray-700 px-4 py-2 mb-2 rounded-lg text-sm w-fit animate-pulse">
+                    <div className="bg-gray-300 text-gray-700 px-4 py-2 mb-2 rounded-lg text-sm w-fit animate-pulse dark:bg-gray-700 dark:text-gray-300">
                         ...
                     </div>
                 )}
@@ -108,12 +110,12 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
             </div>
 
             {/* Input area */}
-            <div className="p-4 border-t bg-white flex items-center gap-2">
+            <div className="mt-4 p-4 border rounded-lg bg-white flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700">
                 <input
                     type="text"
                     id="chat-input"
                     name="chat-input"
-                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 dark:focus:ring-blue-800"
                     placeholder="Type your message..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
@@ -121,7 +123,7 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
                 />
                 <button
                     onClick={sendHandler}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-4 py-2 rounded-lg transition"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition dark:bg-blue-600 dark:hover:bg-blue-500"
                 >
                     Send
                 </button>

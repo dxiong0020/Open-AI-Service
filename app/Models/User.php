@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,14 +42,24 @@ class User extends Authenticatable
         ];
     }
 
-    public function chats() 
+    public function chats()
     {
         return $this->hasMany(Chat::class);
     }
 
-    public function createChat() 
+    public function createChat()
     {
         return Chat::create(['user_id' => $this->id]);
+    }
+
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class);
+    }
+
+    public function userCard()
+    {
+        return $this->hasOne(UserCard::class);
     }
 
     protected static function booted()

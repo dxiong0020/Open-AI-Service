@@ -15,7 +15,6 @@ export default function Graph({ years }) {
     const [year, setYear] = useState(years[0] ?? 2025);
     useEffect(() => {
         async function loadGraphData() {
-            console.log(currentGraph);
             if (currentGraph === "open_ai_usage") {
                 const data = await fetchData("/api/openAiUsage", "POST", {
                     year: year,
@@ -23,7 +22,7 @@ export default function Graph({ years }) {
                 let graphData = data?.graphData;
                 if (!graphData) {
                     graphData = [];
-                } 
+                }
                 setGraphData(graphData);
             } else if (currentGraph === "monthly_cost") {
                 const data = await fetchData("/api/monthlyCostUsage", "POST", {
@@ -32,7 +31,7 @@ export default function Graph({ years }) {
                 let graphData = data?.graphData;
                 if (!graphData) {
                     graphData = [];
-                } 
+                }
                 setGraphData(graphData);
             }
         }
@@ -60,7 +59,7 @@ export default function Graph({ years }) {
     return (
         <AuthenticatedLayout
             header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
+                <h2 className="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
                     Graphs
                 </h2>
             }
@@ -68,13 +67,13 @@ export default function Graph({ years }) {
             <Head title="Chat" />
             <div className="py-12">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
+                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                        <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="mb-4">
                                 <select
                                     id="graphType"
-                                    className="w-full md:w-1/6 bg-gray-800 text-gray-200 border border-gray-600 rounded-lg px-3 py-2 
-                                focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full md:w-1/6 bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2
+                                focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                     onChange={(e) => setGraph(e.target.value)}
                                 >
                                     <option value="open_ai_usage">
@@ -85,9 +84,9 @@ export default function Graph({ years }) {
                                     </option>
                                 </select>
                                 <select
-                                    id="graphType"
-                                    className="w-full md:w-1/6 bg-gray-800 text-gray-200 border border-gray-600 rounded-lg px-3 py-2 
-                                focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    id="graphYear"
+                                    className="w-full md:w-1/6 bg-white text-gray-900 border border-gray-300 rounded-lg px-3 py-2
+                                focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                     onChange={(e) => setYear(e.target.value)}
                                 >
                                     {years.map((year) => (

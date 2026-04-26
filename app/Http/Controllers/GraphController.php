@@ -15,8 +15,7 @@ class GraphController extends Controller
     {
         return Inertia::render('Graph', ['years' => $this->getYears()]);
     }
-
-    public function getYears() 
+    public function getYears()
     {
         $user = User::find(Auth::id());
         $data = Message::whereHas('chat', function ($query) use ($user) {
@@ -33,7 +32,7 @@ class GraphController extends Controller
             $data = Message::whereHas('chat', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->botMessagesPerMonth($request->year ?? 2025)
+                ->botMessagesPerMonth($request->year ?? now()->year)
                 ->get();
         } catch (\Exception $e) {
             Log::error($e);
@@ -41,7 +40,7 @@ class GraphController extends Controller
         return response()->json(['graphData' => $data], 200);
     }
 
-    public function monthlyCostUsage(Request $request) 
+    public function monthlyCostUsage(Request $request)
     {
         $data = collect();
         try {

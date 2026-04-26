@@ -16,15 +16,11 @@ class Message extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'chat_id',
-        'role',
-        'message'
-    ];
+    protected $guarded = [];
 
     public $table = 'messages';
 
-    public function chat() 
+    public function chat()
     {
         return $this->belongsTo(Chat::class);
     }
