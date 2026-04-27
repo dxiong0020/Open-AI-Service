@@ -60,4 +60,15 @@ class SubscriptionController extends Controller
 
         return redirect()->back()->with('message', 'Successfully updated subscription!');
     }
+
+    public function destroy(Request $request)
+    {
+        $subscription = $request->user()->subscription;
+
+        if ($subscription) {
+            $subscription->update(['status' => 'INACTIVE']);
+        }
+
+        return redirect()->back()->with('message', 'Successfully unsubscribed.');
+    }
 }

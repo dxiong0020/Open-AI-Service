@@ -19,12 +19,18 @@ export default function LineGraph({ data = [], title = ''}) {
             labels: Data.map((record) => record.month),
             datasets: [
                 {
-                    label: "costs",
+                    label: "Costs ($)",
                     data: Data.map((record) => record.cost),
-                    fill: false,
-                    borderColor: isDark ? "rgb(125, 242, 242)" : "rgb(75, 192, 192)",
-                    borderWidth: 1,
-                    tension: 0.1
+                    fill: true,
+                    backgroundColor: isDark ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.05)",
+                    borderColor: isDark ? "#60a5fa" : "#2563eb",
+                    borderWidth: 3,
+                    pointBackgroundColor: isDark ? "#60a5fa" : "#2563eb",
+                    pointBorderColor: isDark ? "#1f2937" : "#ffffff",
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    tension: 0.4
                 }
             ],
         };
@@ -34,21 +40,42 @@ export default function LineGraph({ data = [], title = ''}) {
         <Line
             data={formatData(data)}
             options={{
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: {
-                        ticks: { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)' },
-                        grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }
+                        ticks: {
+                            color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+                            font: { size: 11 }
+                        },
+                        grid: { display: false }
                     },
                     y: {
-                        ticks: { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)' },
-                        grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }
+                        beginAtZero: true,
+                        ticks: {
+                            color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+                            font: { size: 11 },
+                            callback: (value) => `$${value}`
+                        },
+                        grid: {
+                            color: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                            drawBorder: false
+                        }
                     }
                 },
                 plugins: {
-                    title: {
-                        display: true,
-                        text: title,
-                        color: isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(0, 0, 0, 0.9)'
+                    tooltip: {
+                        backgroundColor: isDark ? '#1f2937' : '#ffffff',
+                        titleColor: isDark ? '#f3f4f6' : '#111827',
+                        bodyColor: isDark ? '#d1d5db' : '#374151',
+                        borderColor: isDark ? '#374151' : '#e5e7eb',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: (context) => `Cost: $${context.parsed.y.toFixed(2)}`
+                        }
                     },
                     legend: {
                         display: false,

@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\AnalyticController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GraphController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -59,10 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
-    Route::prefix('chat-bot')->group(function () {
-        Route::get('/{id?}', [OpenAIController::class, 'chat'])->name('chatbot.index');
-    });
+    Route::middleware('subscribed')->group(function () {
+        Route::prefix('chat-bot')->group(function () {
+            Route::get('/{id?}', [OpenAIController::class, 'chat'])->name('chatbot.index');
+        });
 
-    // Graph 
-    Route::get('/graph', [GraphController::class, 'index'])->name('graph.index');    
+        // Graph
+        Route::get('/analytic', [AnalyticController::class, 'index'])->name('analytic.index');
+    });
 });

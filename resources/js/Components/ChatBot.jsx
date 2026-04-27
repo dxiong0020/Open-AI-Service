@@ -59,18 +59,19 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
                 return (
                     <div
                         key={msg.id}
-                        className={`max-w-xl px-4 py-2 mb-2 rounded-lg text-sm whitespace-pre-wrap ${
+                        className={`max-w-[85%] md:max-w-xl px-1 py-1 mb-4 rounded-2xl text-sm shadow-sm transition-all duration-300 ${
                             msg.role === "user"
-                                ? "bg-blue-600 text-white self-end ml-auto"
-                                : "bg-gray-200 text-gray-800 self-start mr-auto dark:bg-gray-700 dark:text-gray-100"
+                                ? "bg-gradient-to-br from-blue-600 to-indigo-700 text-white self-end ml-auto rounded-tr-none"
+                                : "bg-white text-gray-800 self-start mr-auto rounded-tl-none border border-gray-100 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
                         }`}
                     >
                         <SyntaxHighlighter
                             language={language}
                             style={oneDark}
                             customStyle={{
-                                borderRadius: "0.5rem",
+                                borderRadius: "0.75rem",
                                 padding: "1rem",
+                                margin: "0",
                             }}
                         >
                             {code}
@@ -83,10 +84,10 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
             return (
                 <div
                     key={msg.id}
-                    className={`max-w-xs px-4 py-2 mb-2 rounded-lg text-sm ${
+                    className={`max-w-[80%] md:max-w-md px-4 py-3 mb-4 rounded-2xl text-sm shadow-sm transition-all duration-300 ${
                         msg.role === "user"
-                            ? "bg-blue-600 text-white self-end ml-auto"
-                            : "bg-gray-200 text-gray-800 self-start mr-auto dark:bg-gray-700 dark:text-gray-100"
+                            ? "bg-gradient-to-br from-blue-600 to-indigo-700 text-white self-end ml-auto rounded-tr-none"
+                            : "bg-white text-gray-800 self-start mr-auto rounded-tl-none border border-gray-100 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
                     }`}
                 >
                     {msg.message}
@@ -96,26 +97,30 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
     }
 
     return (
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
             {/* Chat messages area */}
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50 border border-gray-200 rounded-lg dark:bg-gray-900/50 dark:border-gray-700">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50/50 border border-gray-200/60 rounded-xl shadow-inner dark:bg-gray-950/30 dark:border-gray-800">
                 {displayMessages()}
                 {/* Bot typing indicator */}
                 {loading && (
-                    <div className="bg-gray-300 text-gray-700 px-4 py-2 mb-2 rounded-lg text-sm w-fit animate-pulse dark:bg-gray-700 dark:text-gray-300">
-                        ...
+                    <div className="bg-white border border-gray-100 text-gray-400 px-4 py-3 mb-4 rounded-2xl rounded-tl-none text-sm w-fit animate-pulse dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500">
+                        <div className="flex gap-1">
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                            <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                        </div>
                     </div>
                 )}
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Input area */}
-            <div className="mt-4 p-4 border rounded-lg bg-white flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700">
+            <div className="mt-4 p-2 pl-4 border border-gray-200/60 rounded-2xl bg-white shadow-sm flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700">
                 <input
                     type="text"
                     id="chat-input"
                     name="chat-input"
-                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-900 dark:border-gray-700 dark:text-gray-300 dark:focus:ring-blue-800"
+                    className="flex-1 border-none focus:ring-0 bg-transparent py-3 dark:text-gray-200"
                     placeholder="Type your message..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
@@ -123,9 +128,12 @@ export default function ChatBot({ msgs, sessionId, setSessionId }) {
                 />
                 <button
                     onClick={sendHandler}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg transition dark:bg-blue-600 dark:hover:bg-blue-500"
+                    disabled={!chatInput.trim() || loading}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white p-2.5 rounded-xl transition-all duration-200 dark:bg-blue-600 dark:hover:bg-blue-500 flex items-center justify-center"
                 >
-                    Send
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
+                    </svg>
                 </button>
             </div>
         </div>

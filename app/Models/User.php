@@ -65,11 +65,7 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::deleting(function ($user) {
-            if ($user->isForceDeleting()) {
-                $user->chats()->forceDelete();
-            } else {
-                $user->chats()->delete();
-            }
+            $user->chats()->delete();
         });
     }
 }

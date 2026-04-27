@@ -4,12 +4,22 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
+import DangerButton from '@/Components/DangerButton';
 import InputError from '@/Components/InputError';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function Subscription({ subscription, card, plans }) {
+export default function Subscription({ subscription, card, plans, flash }) {
     const [isEditing, setIsEditing] = useState(false);
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    useEffect(() => {
+        if (flash?.error) {
+            setErrorMessage(flash.error);
+            const timer = setTimeout(() => setErrorMessage(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash]);
+    const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         plan_id: subscription?.plan_type_id || '',
         card_number: card?.card_number || '',
         expiry: card ? `${card.expiry_month}/${card.expiry_year.toString().slice(-2)}` : '',
@@ -52,6 +62,12 @@ export default function Subscription({ subscription, card, plans }) {
         });
     };
 
+    const unsubscribe = () => {
+        if (confirm('Are you sure you want to unsubscribe?')) {
+            destroy(route('subscription.destroy'));
+        }
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -64,7 +80,12 @@ export default function Subscription({ subscription, card, plans }) {
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+                    {errorMessage && (
+                        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded relative dark:bg-red-900/30 dark:border-red-800 dark:text-red-400" role="alert">
+                            <span className="block sm:inline">{errorMessage}</span>
+                        </div>
+                    )}
+                    <div className="overflow-hidden bg-gray-100 shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             {subscription && (
                                 <div className="mb-6 p-3 bg-indigo-50 border border-indigo-100 rounded-lg dark:bg-indigo-900/40 dark:border-indigo-800 flex justify-between items-center">
@@ -72,7 +93,9 @@ export default function Subscription({ subscription, card, plans }) {
                                         <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">Current Subscription</h4>
                                         <div className="text-xs text-indigo-800 dark:text-indigo-400 flex gap-4">
                                             <p>Plan: <span className="font-medium">{subscription.plan_type?.name || 'Standard'}</span></p>
-                                            <p>Status: <span className="font-medium capitalize">{subscription.status || 'Active'}</span></p>
+                                            <p>Status: <span className={`font-medium capitalize ${subscription.status === 'ACTIVE' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                                                {subscription.status || 'Active'}
+                                            </span></p>
                                         </div>
                                     </div>
                                     {card && (
@@ -110,8 +133,13 @@ export default function Subscription({ subscription, card, plans }) {
                                     </div>
                                     <div className="flex gap-4">
                                         <PrimaryButton onClick={() => setIsEditing(true)}>
-                                            Edit Subscription
+                                            {subscription.status === 'ACTIVE' ? 'Edit Subscription' : 'Re-activate'}
                                         </PrimaryButton>
+                                        {subscription.status === 'ACTIVE' && (
+                                            <DangerButton onClick={unsubscribe}>
+                                                Unsubscribe
+                                            </DangerButton>
+                                        )}
                                     </div>
                                 </div>
                             ) : (

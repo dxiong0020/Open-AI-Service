@@ -13,25 +13,15 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('type');
-            $table->string('stripe_id')->unique();
-            $table->string('stripe_status');
-            $table->string('stripe_price')->nullable();
-            $table->integer('quantity')->nullable();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_card_id')->constrained('user_cards')->cascadeOnDelete();
+            $table->string('status')->default('ACTIVE');
+            $table->foreignId('plan_type_id')->nullable()->constrained('plan_types')->nullOnDelete();
             $table->timestamp('trial_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();
-
-            $table->index(['user_id', 'status']);
+            $table->softDeletes();
+            $table->index(['user_id', 'user_card_id', 'plan_type_id']);
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('subscriptions');
     }
 };

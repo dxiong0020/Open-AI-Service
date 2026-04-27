@@ -7,13 +7,15 @@ import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+    const { auth } = usePage().props;
+    const user = auth.user;
+    const isSubscribed = user.subscription?.status === 'ACTIVE';
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
+        <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
+            <nav className="border-b border-gray-100 bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
                         <div className="flex">
@@ -30,18 +32,22 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
-                                <NavLink
-                                    href={route("chatbot.index")}
-                                    active={route().current("chatbot.index")}
-                                >
-                                    Chat Bot
-                                </NavLink>
-                                <NavLink
-                                    href={route("graph.index")}
-                                    active={route().current("graph.index")}
-                                >
-                                    Graphs
-                                </NavLink>
+                                {isSubscribed && (
+                                    <>
+                                        <NavLink
+                                            href={route("chatbot.index")}
+                                            active={route().current("chatbot.index")}
+                                        >
+                                            Chat Bot
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("analytic.index")}
+                                            active={route().current("analytic.index")}
+                                        >
+                                            Analytics
+                                        </NavLink>
+                                    </>
+                                )}
                                 <NavLink
                                     href={route("subscription.index")}
                                     active={route().current("subscription.index")}
@@ -60,7 +66,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <span className="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
+                                                className="inline-flex items-center rounded-md border border-transparent bg-gray-100 px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
                                             >
                                                 {user.name}
 
@@ -154,6 +160,22 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+                        {isSubscribed && (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route("chatbot.index")}
+                                    active={route().current("chatbot.index")}
+                                >
+                                    Chat Bot
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route("analytic.index")}
+                                    active={route().current("analytic.index")}
+                                >
+                                    Graphs
+                                </ResponsiveNavLink>
+                            </>
+                        )}
                         <ResponsiveNavLink
                             href={route("subscription.index")}
                             active={route().current("subscription.index")}
@@ -192,7 +214,7 @@ export default function AuthenticatedLayout({ header, children }) {
             </nav>
 
             {header && (
-                <header className="bg-white shadow dark:bg-gray-800">
+                <header className="bg-gray-100 shadow dark:bg-gray-800">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                         {header}
                     </div>

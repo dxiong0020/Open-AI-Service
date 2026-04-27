@@ -15,15 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-            // WARNING: DO NOT STORE RAW CARD DATA IN PRODUCTION
-            // These fields are for development/mock purposes only.
             $table->string('card_holder_name');
-            $table->string('card_number'); // In a real app, this would be encrypted
+            $table->string('card_number');
             $table->string('expiry_month');
             $table->string('expiry_year');
-            $table->string('cvc'); // NEVER store CVC in production, even encrypted
+            $table->string('cvc');
 
-            // Fields for "Stripe-like" behavior
             $table->string('last_four', 4);
             $table->string('card_brand');
 

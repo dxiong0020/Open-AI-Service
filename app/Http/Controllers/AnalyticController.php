@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-class GraphController extends Controller
+class AnalyticController extends Controller
 {
     public function index()
     {
@@ -48,7 +48,7 @@ class GraphController extends Controller
             $data = Message::whereHas('chat', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->openAiCostPerUse($request->year ?? 2025)
+                ->openAiCostPerUse($request->year)
                 ->get();
         } catch (\Exception $e) {
             Log::error($e);
