@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/*
+ * @property mixed $id
+ * @property mixed $chat_id
+ * @property mixed $role
+ * @property mixed $message
+ * @property mixed $created_at
+ * @property mixed $updated_at
+ * @property mixed $deleted_at
+ */
+
 class Message extends Model
 {
     use HasFactory, SoftDeletes;
@@ -19,6 +29,16 @@ class Message extends Model
     protected $guarded = [];
 
     public $table = 'messages';
+
+    protected $fillable = [
+        'user_id',
+        'chat_id',
+        'role',
+        'message',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
 
     public function chat()
     {

@@ -20,6 +20,10 @@ class MessageSeeder extends Seeder
                 'chat_id' => $chat->id,
                 'role' => 'user'
             ]);
+            Message::factory()->create([
+                'chat_id' => $chat->id,
+                'role' => 'bot'
+            ]);
         }
     }
 }
